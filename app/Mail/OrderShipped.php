@@ -26,7 +26,7 @@ class OrderShipped extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Il tuo ordine Resilient Druid è stato spedito!',
+            subject: 'Il tuo ordine è stato spedito!',
         );
     }
 

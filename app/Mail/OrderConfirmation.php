@@ -25,7 +25,7 @@ class OrderConfirmation extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Conferma Ricezione Ordine #' . $this->order->id . ' - Resilient Druid',
+            subject: 'Conferma Ricezione Ordine #' . $this->order->id . ' - Balaklava',
         );
     }
 

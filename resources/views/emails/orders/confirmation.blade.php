@@ -20,7 +20,7 @@
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <a href="{{ config('app.url') }}" class="logo">Resilient Druid</a>
+            <a href="{{ config('app.url') }}" class="logo">Balaklava</a>
         </div>
 
         <!-- Body -->
@@ -76,7 +76,7 @@
 
         <!-- Footer -->
         <div class="footer">
-            &copy; {{ date('Y') }} Resilient Druid. Tutti i diritti riservati.<br>
+            &copy; {{ date('Y') }} Balaklava. Tutti i diritti riservati.<br>
             Questa è una mail automatica, per info contattaci su Instagram.
         </div>
     </div>

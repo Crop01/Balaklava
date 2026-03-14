@@ -16,7 +16,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <a href="{{ config('app.url') }}" class="logo">Resilient Druid</a>
+            <a href="{{ config('app.url') }}" class="logo">Balaklava</a>
         </div>
         <div class="content">
             <span class="status-badge">Ordine Spedito</span>
@@ -44,7 +44,7 @@
             </div>
         </div>
         <div class="footer">
-            &copy; {{ date('Y') }} Resilient Druid.
+            &copy; {{ date('Y') }} Balaklava.
         </div>
     </div>
 </body>

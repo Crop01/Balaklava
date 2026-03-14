@@ -4,7 +4,7 @@ import { useState } from 'react';
 export default function OrderShow({ auth, order }) {
     const [isConfirming, setIsConfirming] = useState(false);
     const { data, setData, post, processing } = useForm({
-        message: 'Il tuo ordine Balaklava è stato spedito! \n\nTracking Number: [INSERISCI QUI]\nCorriere: [NOME CORRIERE]\n\nGrazie per il supporto.\nBalaklava Team',
+        message: 'Il tuo ordine Balaklava è stato spedito! \nGrazie per il supporto.\nBalaklava Team',
     });
 
     const submitShipment = (e) => {
