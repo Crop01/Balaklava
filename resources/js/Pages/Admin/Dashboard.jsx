@@ -50,12 +50,29 @@ export default function AdminDashboard({ auth, orders }) {
                         <p className="text-xs text-gray-500 uppercase tracking-widest leading-relaxed">
                             Gestione ordini e<br/>monitoraggio vendite.
                         </p>
-                        <Link 
-                            href={route('admin.products.index')}
-                            className="mt-6 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-white hover:text-red-500 transition-colors border-b border-gray-800 pb-1 hover:border-red-500"
-                        >
-                            Gestisci Catalogo →
-                        </Link>
+                        
+                        {/* Action Menu Admin */}
+                        <div className="mt-8 flex flex-col gap-3">
+                            <Link 
+                                href={route('admin.products.index')}
+                                className="group flex items-center justify-between bg-[#121212] border border-gray-800 px-4 py-4 hover:border-red-600 transition-colors"
+                            >
+                                <span className="text-xs font-bold uppercase tracking-widest text-white group-hover:text-red-500 transition-colors">
+                                    Gestisci Catalogo
+                                </span>
+                                <span className="text-gray-700 group-hover:text-red-500 transition-colors font-bold">→</span>
+                            </Link>
+                            
+                            <Link 
+                                href={route('admin.gallery.index')}
+                                className="group flex items-center justify-between bg-[#121212] border border-gray-800 px-4 py-4 hover:border-white transition-colors"
+                            >
+                                <span className="text-xs font-bold uppercase tracking-widest text-white transition-colors">
+                                    Gestisci Galleria
+                                </span>
+                                <span className="text-gray-700 group-hover:text-white transition-colors font-bold">→</span>
+                            </Link>
+                        </div>
                     </div>
 
                     {/* Stat Cards */}

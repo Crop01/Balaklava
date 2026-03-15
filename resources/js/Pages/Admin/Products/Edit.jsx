@@ -14,7 +14,7 @@ export default function EditProduct({ product }) {
         collection: product.collection,
         sizes: product.sizes || [],
         colors: initialColors,
-        existing_images: product.images || [], // AGGIUNTO: Gestione foto vecchie
+        existing_images: product.images || [], 
         images: [], 
     });
 
@@ -36,9 +36,32 @@ export default function EditProduct({ product }) {
         setImagePreviews(previews);
     };
 
-    // AGGIUNTO: Funzione per rimuovere un'immagine vecchia dal form
+    // --- NUOVE FUNZIONI PER ORDINARE LE IMMAGINI ---
+    
     const removeExistingImage = (indexToRemove) => {
         setData('existing_images', data.existing_images.filter((_, idx) => idx !== indexToRemove));
+    };
+
+    const moveImageLeft = (idx) => {
+        if (idx === 0) return;
+        const newImages = [...data.existing_images];
+        [newImages[idx - 1], newImages[idx]] = [newImages[idx], newImages[idx - 1]];
+        setData('existing_images', newImages);
+    };
+
+    const moveImageRight = (idx) => {
+        if (idx === data.existing_images.length - 1) return;
+        const newImages = [...data.existing_images];
+        [newImages[idx + 1], newImages[idx]] = [newImages[idx], newImages[idx + 1]];
+        setData('existing_images', newImages);
+    };
+
+    const makeCover = (idx) => {
+        if (idx === 0) return;
+        const newImages = [...data.existing_images];
+        const [movedImage] = newImages.splice(idx, 1);
+        newImages.unshift(movedImage);
+        setData('existing_images', newImages);
     };
 
     const handleSubmit = (e) => {
@@ -67,23 +90,23 @@ export default function EditProduct({ product }) {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="md:col-span-2">
                                 <label className="block text-xs font-bold uppercase text-gray-400 mb-1">Nome Prodotto</label>
-                                <input type="text" value={data.name} onChange={e => setData('name', e.target.value)} className="w-full bg-gray-900 border border-gray-700 text-white px-4 py-2 rounded-sm" />
+                                <input type="text" value={data.name} onChange={e => setData('name', e.target.value)} className="w-full bg-gray-900 border border-gray-700 text-white px-4 py-2 rounded-sm focus:border-red-500 focus:ring-red-500" />
                             </div>
                             <div>
                                 <label className="block text-xs font-bold uppercase text-gray-400 mb-1">Prezzo (€)</label>
-                                <input type="number" step="0.01" value={data.price} onChange={e => setData('price', e.target.value)} className="w-full bg-gray-900 border border-gray-700 text-white px-4 py-2 rounded-sm" />
+                                <input type="number" step="0.01" value={data.price} onChange={e => setData('price', e.target.value)} className="w-full bg-gray-900 border border-gray-700 text-white px-4 py-2 rounded-sm focus:border-red-500 focus:ring-red-500" />
                             </div>
                             <div>
                                 <label className="block text-xs font-bold uppercase text-gray-400 mb-1">Prezzo Scontato</label>
-                                <input type="number" step="0.01" value={data.sale_price} onChange={e => setData('sale_price', e.target.value)} className="w-full bg-gray-900 border border-gray-700 text-white px-4 py-2 rounded-sm" />
+                                <input type="number" step="0.01" value={data.sale_price} onChange={e => setData('sale_price', e.target.value)} className="w-full bg-gray-900 border border-gray-700 text-white px-4 py-2 rounded-sm focus:border-red-500 focus:ring-red-500" />
                             </div>
                             <div>
                                 <label className="block text-xs font-bold uppercase text-gray-400 mb-1">Collezione</label>
-                                <input type="text" value={data.collection} onChange={e => setData('collection', e.target.value)} className="w-full bg-gray-900 border border-gray-700 text-white px-4 py-2 rounded-sm" />
+                                <input type="text" value={data.collection} onChange={e => setData('collection', e.target.value)} className="w-full bg-gray-900 border border-gray-700 text-white px-4 py-2 rounded-sm focus:border-red-500 focus:ring-red-500" />
                             </div>
                             <div className="md:col-span-2">
                                 <label className="block text-xs font-bold uppercase text-gray-400 mb-1">Descrizione</label>
-                                <textarea rows="4" value={data.description} onChange={e => setData('description', e.target.value)} className="w-full bg-gray-900 border border-gray-700 text-white px-4 py-2 rounded-sm"></textarea>
+                                <textarea rows="4" value={data.description} onChange={e => setData('description', e.target.value)} className="w-full bg-gray-900 border border-gray-700 text-white px-4 py-2 rounded-sm focus:border-red-500 focus:ring-red-500"></textarea>
                             </div>
                         </div>
                     </div>
@@ -95,7 +118,7 @@ export default function EditProduct({ product }) {
                             <div className="flex flex-wrap gap-4">
                                 {availableSizes.map(size => (
                                     <label key={size} className="flex items-center gap-2 cursor-pointer">
-                                        <input type="checkbox" checked={data.sizes.includes(size)} onChange={() => handleSizeChange(size)} className="bg-black border-gray-700 text-red-600 focus:ring-0 rounded-sm" />
+                                        <input type="checkbox" checked={data.sizes.includes(size)} onChange={() => handleSizeChange(size)} className="bg-black border-gray-700 text-red-600 focus:ring-red-500 rounded-sm" />
                                         <span className="text-sm text-gray-300">{size}</span>
                                     </label>
                                 ))}
@@ -103,43 +126,95 @@ export default function EditProduct({ product }) {
                         </div>
                         <div>
                             <label className="block text-xs font-bold uppercase text-gray-400 mb-1">Colori (Separati da virgola)</label>
-                            <input type="text" value={data.colors} onChange={e => setData('colors', e.target.value)} className="w-full bg-gray-900 border border-gray-700 text-white px-4 py-2 rounded-sm" />
+                            <input type="text" value={data.colors} onChange={e => setData('colors', e.target.value)} className="w-full bg-gray-900 border border-gray-700 text-white px-4 py-2 rounded-sm focus:border-red-500 focus:ring-red-500" />
                         </div>
                     </div>
 
                     <div className="bg-[#121212] border border-gray-800 p-6 rounded-sm space-y-6">
                         <h2 className="text-lg font-bold text-white uppercase tracking-wide border-b border-gray-800 pb-2">Immagini</h2>
                         
-                        {/* AGGIUNTO: Griglia con pulsante "X" per eliminare */}
                         {data.existing_images.length > 0 && (
                             <div className="mb-4">
-                                <p className="text-xs text-gray-400 mb-2 uppercase">Immagini Attuali (Clicca la X per rimuovere)</p>
-                                <div className="grid grid-cols-4 gap-4">
+                                <p className="text-xs text-gray-400 mb-4 uppercase">Ordina Immagini (La prima sarà la copertina)</p>
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                     {data.existing_images.map((src, idx) => (
-                                        <div key={idx} className="relative group border border-gray-800 rounded-sm overflow-hidden bg-black">
-                                            <img src={src} className="w-full h-auto opacity-70 group-hover:opacity-40 transition-opacity" />
-                                            {/* Pulsante Rimuovi */}
+                                        <div key={src} className="relative group border border-gray-800 rounded-sm overflow-hidden bg-black aspect-square flex items-center justify-center">
+                                            
+                                            <img src={src} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                            
+                                            {/* Sfondo scuro in hover per far risaltare i bottoni */}
+                                            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+
+                                            {/* Badge Copertina */}
+                                            {idx === 0 && (
+                                                <div className="absolute top-2 left-2 bg-white text-black text-[10px] font-black px-2 py-1 uppercase tracking-wider z-10 shadow-lg">
+                                                    Copertina
+                                                </div>
+                                            )}
+
+                                            {/* Pulsante "X" in alto a destra */}
                                             <button 
                                                 type="button" 
                                                 onClick={() => removeExistingImage(idx)}
-                                                className="absolute inset-0 m-auto w-10 h-10 bg-red-600 text-white flex items-center justify-center font-black uppercase text-sm opacity-0 group-hover:opacity-100 transition-opacity shadow-lg cursor-pointer"
-                                                title="Rimuovi questa foto"
+                                                className="absolute top-0 right-0 w-8 h-8 flex items-center justify-center bg-red-600 hover:bg-red-700 text-white text-sm font-bold opacity-0 group-hover:opacity-100 transition-all z-20"
+                                                title="Rimuovi Immagine"
                                             >
-                                                X
+                                                ✕
                                             </button>
+
+                                            {/* Comandi Centrali (Visibili in hover) */}
+                                            <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-20 pointer-events-none">
+                                                
+                                                {idx > 0 && (
+                                                    <button 
+                                                        type="button" 
+                                                        onClick={() => makeCover(idx)} 
+                                                        className="bg-white hover:bg-gray-200 text-black text-[10px] font-black uppercase tracking-widest px-6 py-2 transition-colors pointer-events-auto mb-2"
+                                                    >
+                                                        Set Cover
+                                                    </button>
+                                                )}
+
+                                                <div className="flex gap-1 pointer-events-auto">
+                                                    {idx > 0 && (
+                                                        <button 
+                                                            type="button" 
+                                                            onClick={() => moveImageLeft(idx)} 
+                                                            className="bg-gray-900/90 hover:bg-black text-white w-10 h-10 flex items-center justify-center text-sm transition-colors border border-gray-700 hover:border-white" 
+                                                            title="Sposta a Sinistra"
+                                                        >
+                                                            ←
+                                                        </button>
+                                                    )}
+                                                    
+                                                    {idx < data.existing_images.length - 1 && (
+                                                        <button 
+                                                            type="button" 
+                                                            onClick={() => moveImageRight(idx)} 
+                                                            className="bg-gray-900/90 hover:bg-black text-white w-10 h-10 flex items-center justify-center text-sm transition-colors border border-gray-700 hover:border-white" 
+                                                            title="Sposta a Destra"
+                                                        >
+                                                            →
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            </div>
+
                                         </div>
                                     ))}
                                 </div>
                             </div>
                         )}
 
-                        <div className="border-t border-gray-800 pt-4">
+                        <div className="border-t border-gray-800 pt-6 mt-6">
                             <label className="block text-xs font-bold uppercase text-gray-400 mb-2">Aggiungi Nuove Immagini</label>
-                            <input type="file" multiple accept="image/*" onChange={handleImageChange} className="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:bg-gray-800 file:border-0 file:text-white hover:file:bg-gray-700" />
+                            <input type="file" multiple accept="image/*" onChange={handleImageChange} className="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:bg-gray-800 file:border-0 file:text-white hover:file:bg-gray-700 cursor-pointer transition-colors" />
                             {imagePreviews.length > 0 && (
                                 <div className="grid grid-cols-4 gap-4 mt-4">
                                     {imagePreviews.map((src, idx) => (
-                                        <img key={idx} src={src} className="w-full h-auto border border-green-500 rounded-sm" />
+                                        <div key={idx} className="aspect-square border border-gray-600 opacity-60 rounded-sm overflow-hidden bg-black">
+                                            <img src={src} className="w-full h-full object-cover" />
+                                        </div>
                                     ))}
                                 </div>
                             )}

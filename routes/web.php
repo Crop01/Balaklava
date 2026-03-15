@@ -103,6 +103,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
             'update' => 'admin.products.update',
             'destroy' => 'admin.products.destroy',
         ]);
+
+        
+    // Rotte Galleria Marquee (Nomi corretti con admin.)
+    Route::get('/gallery', [App\Http\Controllers\AdminGalleryController::class, 'index'])->name('admin.gallery.index');
+    Route::post('/gallery', [App\Http\Controllers\AdminGalleryController::class, 'store'])->name('admin.gallery.store');
+    Route::post('/gallery/delete', [App\Http\Controllers\AdminGalleryController::class, 'destroy'])->name('admin.gallery.destroy');
 });
 
 require __DIR__.'/auth.php';
