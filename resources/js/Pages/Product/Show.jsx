@@ -1,4 +1,4 @@
-import { Head, router } from '@inertiajs/react';
+import { Head, router, Link, useForm } from '@inertiajs/react';
 import { useState, useEffect, useCallback } from 'react';
 import Navbar from '@/Components/Navbar';
 import { useCart } from '@/Context/CartContext';
@@ -296,19 +296,29 @@ export default function Show({ product, auth }) {
                                 </div>
                             )}
 
-                            <button
-                                onClick={handleAddToCart}
-                                className="w-full bg-red-600 text-white py-5 text-sm font-black uppercase tracking-[0.3em] hover:bg-red-700 transition-all active:scale-95 duration-200 shadow-lg hover:shadow-red-900/50"
-                            >
-                                {auth.user ? 'Aggiungi al Carrello' : 'Accedi per Acquistare'}
-                            </button>
+                            {auth.user ? (
+                                // SE LOGGATO: Mostra il bottone normale che aggiunge al carrello
+                                <button
+                                    onClick={handleAddToCart}
+                                    className="w-full bg-red-600 text-white py-5 text-sm font-black uppercase tracking-[0.3em] hover:bg-red-700 transition-all active:scale-95 duration-200 shadow-lg hover:shadow-red-900/50"
+                                >
+                                    Aggiungi al Carrello
+                                </button>
+                            ) : (
+                                // SE NON LOGGATO: Mostra un finto bottone (che in realtà è un Link) e porta al login
+                                <Link
+                                    href={route('login')}
+                                    className="w-full block text-center bg-red-900/40 text-red-500 border border-red-900 py-5 text-sm font-black uppercase tracking-[0.3em] hover:bg-red-600 hover:text-white transition-all active:scale-95 duration-200 shadow-lg hover:shadow-red-900/50"
+                                >
+                                    Accedi per Acquistare
+                                </Link>
+                            )}
 
                             <div className="mt-8 pt-6 border-t border-brand-gray flex flex-col gap-2 text-[10px] text-gray-500 uppercase tracking-widest">
                                 <div className="flex items-center gap-2">
                                     <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
-                                    Spedizione Immediata
+                                    Spedizione entro 14 giorni
                                 </div>
-                                <p>Resi facili entro 14 giorni</p>
                             </div>
                         </div>
                     </div>

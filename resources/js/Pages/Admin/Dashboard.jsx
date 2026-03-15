@@ -24,9 +24,12 @@ export default function AdminDashboard({ auth, orders }) {
             
             {/* Topbar */}
             <nav className="border-b border-gray-800 bg-[#0a0a0a] px-8 py-5 flex justify-between items-center sticky top-0 z-50 backdrop-blur-md bg-opacity-90">
-                <div className="font-black uppercase text-xl tracking-tighter text-white">
+                <Link 
+                    href="/" 
+                    className="font-black uppercase text-xl tracking-tighter text-white hover:text-gray-300 transition-colors"
+                >
                     Balaklava <span className="text-red-600">.Admin</span>
-                </div>
+                </Link>
                 <div className="flex gap-8 text-[10px] font-bold uppercase tracking-widest items-center">
                     <Link href="/" className="hover:text-white transition-colors opacity-60 hover:opacity-100">
                         Vai allo Shop

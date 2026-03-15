@@ -65,8 +65,18 @@
                 </tbody>
             </table>
 
-            <div class="total">
-                Totale: €{{ number_format($order->total, 2) }}
+            @php
+                $subtotal = $order->items->sum(function($item) { return $item->price * $item->quantity; });
+                $shipping = $order->total - $subtotal;
+            @endphp
+            
+            <div style="text-align: right; font-size: 14px; color: #666; padding-top: 15px;">
+                Subtotale: €{{ number_format($subtotal, 2) }}<br>
+                Spedizione: @if($shipping > 0) €{{ number_format($shipping, 2) }} @else <strong style="color: #22c55e;">Gratis</strong> @endif
+            </div>
+            
+            <div class="total" style="padding-top: 5px;">
+                Totale Finale: €{{ number_format($order->total, 2) }}
             </div>
             
             <div style="text-align: center; margin-top: 30px;">

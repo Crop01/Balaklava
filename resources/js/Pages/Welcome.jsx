@@ -102,7 +102,7 @@ const ProductCard = ({ product }) => {
     );
 };
 
-export default function Welcome({ auth, collections }) {
+export default function Welcome({ auth, collections, galleryImages = [] }) {
     const collectionsArray = Object.entries(collections || {});
     const { social } = usePage().props;
 
@@ -167,6 +167,32 @@ export default function Welcome({ auth, collections }) {
                     </RevealOnScroll>
                 </section>
             ))}
+
+            {/* FASCIA FOTO SCORREVOLI (MARQUEE GALLERY) */}
+            <section className="py-12 border-t border-brand-gray bg-[#0a0a0a] overflow-hidden">
+                <div className="mb-8 px-6 text-center">
+                    <h2 className="text-xl font-black uppercase tracking-[0.2em] text-gray-500">
+                        Balaklava Lifestyle
+                    </h2>
+                </div>
+                
+                {/* Contenitore scorrevole */}
+                <div className="relative flex overflow-x-hidden w-full">
+                    {/* RIMOSSO: group-hover:[animation-play-state:paused] */}
+                    <div className="animate-marquee whitespace-nowrap flex gap-1 items-center">
+                        {[...galleryImages, ...galleryImages, ...galleryImages].map((src, index) => (
+                            <img 
+                                key={index} 
+                                src={src} 
+                                alt="Balaklava Gallery" 
+                                // RIMOSSO: grayscale, hover:grayscale-0 e cursor-pointer
+                                className="h-64 sm:h-80 w-auto object-cover rounded-sm border border-gray-800 transition-all duration-500"
+                                onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }}
+                            />
+                        ))}
+                    </div>
+                </div>
+            </section>
 
             {/* NUOVA SEZIONE MANIFESTO */}
             <section className="py-24 px-6 bg-brand-black border-t border-brand-gray relative overflow-hidden">

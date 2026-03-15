@@ -15,10 +15,24 @@ Route::get('/', function () {
         ->get()
         ->groupBy('collection');
 
+    $galleryPath = public_path('img/gallery');
+    $galleryImages = [];
+
+    if (File::exists($galleryPath)) {
+        $files = File::files($galleryPath);
+        foreach ($files as $file) {
+            // Verifica che siano immagini (opzionale ma consigliato)
+            if (in_array(strtolower($file->getExtension()), ['jpg', 'jpeg', 'png', 'webp', 'gif'])) {
+                $galleryImages[] = '/img/gallery/' . $file->getFilename();
+            }
+        }
+    }
+
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'collections' => $collections, // Passiamo l'intera collezione raggruppata
+        'galleryImages' => $galleryImages, // Passiamo le immagini della galleria
     ]);
 })->name('home');
 

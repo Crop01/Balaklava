@@ -110,12 +110,12 @@ class AdminProductController extends Controller
             'description' => 'nullable|string',
             'collection' => 'required|string',
             'sizes' => 'nullable|array',
-            'colors' => 'nullable|string', // Arriva come stringa
+            'colors' => 'nullable|string',
+            'existing_images' => 'nullable|array',
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:4096'
         ]);
 
-        // Gestione Immagini: Aggiungiamo le nuove a quelle esistenti
-        $imagePaths = $product->images ?? [];
+        $imagePaths = $request->existing_images ?? [];
         
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
@@ -124,7 +124,6 @@ class AdminProductController extends Controller
             }
         }
 
-        // Gestione Colori
         $colorsArray = $validated['colors'] 
             ? array_map('trim', explode(',', $validated['colors'])) 
             : null;
