@@ -102,6 +102,119 @@ const ProductCard = ({ product }) => {
     );
 };
 
+const GalleryMarquee = ({ images }) => {
+    const trackRef = useRef(null);
+    const firstSetRef = useRef(null);
+    
+    // VELOCITÀ: Usa solo numeri interi (1, 2, 3). 2 è l'ideale per scorrere veloci.
+    const speed = 2; 
+
+    useEffect(() => {
+        let animationId;
+        let currentX = 0;
+        let isDragging = false;
+        let startX = 0;
+
+        const track = trackRef.current;
+        const firstSet = firstSetRef.current;
+        
+        if (!track || !firstSet) return;
+
+        const play = () => {
+            if (!isDragging) {
+                currentX -= speed;
+                // Calcolo esatto per il loop perfetto basato sul primo blocco di foto
+                if (Math.abs(currentX) >= firstSet.offsetWidth) {
+                    currentX = 0;
+                }
+                // Utilizza la Scheda Video (GPU) per una fluidità assoluta
+                track.style.transform = `translate3d(${currentX}px, 0, 0)`;
+            }
+            animationId = requestAnimationFrame(play);
+        };
+
+        animationId = requestAnimationFrame(play);
+
+        // --- GESTIONE TRASCINAMENTO (DITO O MOUSE) ---
+        const handleDragStart = (e) => {
+            isDragging = true;
+            startX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
+        };
+
+        const handleDragMove = (e) => {
+            if (!isDragging) return;
+            const x = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
+            const walk = (x - startX) * 1.5; // Moltiplicatore di sensibilità al tocco
+            currentX += walk;
+            startX = x;
+
+            // Loop manuale durante il trascinamento
+            if (currentX > 0) currentX = -firstSet.offsetWidth;
+            if (Math.abs(currentX) >= firstSet.offsetWidth) currentX = 0;
+
+            track.style.transform = `translate3d(${currentX}px, 0, 0)`;
+        };
+
+        const handleDragEnd = () => {
+            isDragging = false;
+        };
+
+        track.addEventListener('mousedown', handleDragStart);
+        window.addEventListener('mousemove', handleDragMove);
+        window.addEventListener('mouseup', handleDragEnd);
+        track.addEventListener('touchstart', handleDragStart, { passive: true });
+        window.addEventListener('touchmove', handleDragMove, { passive: true });
+        window.addEventListener('touchend', handleDragEnd);
+
+        return () => {
+            cancelAnimationFrame(animationId);
+            track.removeEventListener('mousedown', handleDragStart);
+            window.removeEventListener('mousemove', handleDragMove);
+            window.removeEventListener('mouseup', handleDragEnd);
+            track.removeEventListener('touchstart', handleDragStart);
+            window.removeEventListener('touchmove', handleDragMove);
+            window.removeEventListener('touchend', handleDragEnd);
+        };
+    }, []);
+
+    if (!images || images.length === 0) return null;
+
+    // Struttura fissa delle foto
+    const imageElements = images.map((src, index) => (
+        <img 
+            key={index} 
+            src={src} 
+            alt="Resilient Druid Lifestyle" 
+            // pointer-events-none è FONDAMENTALE per non far interferire il browser col drag
+            className="h-64 sm:h-80 w-auto object-cover rounded-sm border border-gray-800 pointer-events-none"
+            onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }}
+        />
+    ));
+
+    return (
+        // Nascondiamo l'overflow e cambiamo il cursore a manina
+        <div className="overflow-hidden w-full cursor-grab active:cursor-grabbing">
+            {/* Il binario che si sposta fluidamente */}
+            <div ref={trackRef} className="flex w-max will-change-transform">
+                
+                {/* 1° Set di foto (usato per il calcolo del loop) */}
+                <div ref={firstSetRef} className="flex gap-1 flex-shrink-0 pr-1">
+                    {imageElements}
+                </div>
+                
+                {/* 2° e 3° Set di foto identici (servono a coprire gli schermi molto larghi) */}
+                <div className="flex gap-1 flex-shrink-0 pr-1">
+                    {imageElements}
+                </div>
+                <div className="flex gap-1 flex-shrink-0 pr-1">
+                    {imageElements}
+                </div>
+                
+            </div>
+        </div>
+    );
+};
+
 export default function Welcome({ auth, collections, galleryImages = [] }) {
     const collectionsArray = Object.entries(collections || {});
     const { social } = usePage().props;
@@ -168,7 +281,7 @@ export default function Welcome({ auth, collections, galleryImages = [] }) {
                 </section>
             ))}
 
-            {/* FASCIA FOTO SCORREVOLI (MARQUEE GALLERY) */}
+            {/* FASCIA FOTO SCORREVOLI */}
             <section className="py-12 border-t border-brand-gray bg-[#0a0a0a] overflow-hidden">
                 <div className="mb-8 px-6 text-center">
                     <h2 className="text-xl font-black uppercase tracking-[0.2em] text-gray-500">
@@ -176,22 +289,9 @@ export default function Welcome({ auth, collections, galleryImages = [] }) {
                     </h2>
                 </div>
                 
-                {/* Contenitore scorrevole */}
-                <div className="relative flex overflow-x-hidden w-full">
-                    {/* RIMOSSO: group-hover:[animation-play-state:paused] */}
-                    <div className="animate-marquee whitespace-nowrap flex gap-1 items-center">
-                        {[...galleryImages, ...galleryImages, ...galleryImages].map((src, index) => (
-                            <img 
-                                key={index} 
-                                src={src} 
-                                alt="Balaklava Gallery" 
-                                // RIMOSSO: grayscale, hover:grayscale-0 e cursor-pointer
-                                className="h-64 sm:h-80 w-auto object-cover rounded-sm border border-gray-800 transition-all duration-500"
-                                onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }}
-                            />
-                        ))}
-                    </div>
-                </div>
+                {/* INVOCHIAMO IL NUOVO COMPONENTE QUI: */}
+                <GalleryMarquee images={galleryImages} />
+
             </section>
 
             {/* NUOVA SEZIONE MANIFESTO */}
